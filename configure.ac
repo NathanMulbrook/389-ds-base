@@ -125,8 +125,8 @@ AC_ARG_ENABLE(debug, AS_HELP_STRING([--enable-debug], [Enable debug features (de
 AC_MSG_RESULT($enable_debug)
 if test "$enable_debug" = yes ; then
   debug_defs="-DDEBUG -DMCC_DEBUG"
-  debug_cflags="-g3 -ggdb -gdwarf-5  -O0"
-  debug_cxxflags="-g3 -ggdb -gdwarf-5  -O0"
+  debug_cflags="-g3 -ggdb -gdwarf-5  -O0 -fsanitize=fuzzer-no-link"
+  debug_cxxflags="-g3 -ggdb -gdwarf-5  -O0 -fsanitize=fuzzer-no-link"
   debug_rust_defs="-C debuginfo=2 -Z macro-backtrace"
   cargo_defs=""
   rust_target_dir="debug"
