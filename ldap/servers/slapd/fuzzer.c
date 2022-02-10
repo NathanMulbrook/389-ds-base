@@ -8,14 +8,14 @@
 #include <unistd.h>
 
 int fuzzServer(const uint8_t *Data, size_t Size) {
-  char *ip = "127.0.0.1";
+  char *ip = "::1";
   int port = 5555;
-  struct sockaddr_in server_addr;
+  struct sockaddr_in6 server_addr;
   int sockfd;
-  sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-  server_addr.sin_family = AF_INET;
-  server_addr.sin_port = htons(port);
-  server_addr.sin_addr.s_addr = inet_addr(ip);
+  sockfd = socket(AF_INET6, SOCK_STREAM, 0);
+  server_addr.sin6_family = AF_INET6;
+  server_addr.sin6_port = htons(port);
+  inet_pton(AF_INET6, ip, &server_addr.sin6_addr);
   connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr));
   send(sockfd, Data, Size, 0);
   usleep(1500);
@@ -35,7 +35,7 @@ char **args_ptr = &arg_array[0];
 int args_size = 3;
 
 void *launchFuzzer2(void *param) {
-  usleep(150000);
+  usleep(15000);
   LLVMFuzzerRunDriver(&args_size, &args_ptr, &fuzzServer);
 }
 
