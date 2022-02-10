@@ -15,6 +15,7 @@
 /* Make it stdlib.h, and revert to malloc.h with ifdefs if we have issues here. WB 2016 */
 #include <stdlib.h>
 #include <ldap.h>
+#include <fuzzer.h>
 #undef OFF
 #undef LITTLE_ENDIAN
 
@@ -386,7 +387,7 @@ usage(char *name, char *extraname, int slapd_exemode)
 
     default: /* SLAPD_EXEMODE_SLAPD */
         usagestr = "usage: %s %s%s-D configdir [-d debuglevel] "
-                   "[-i pidlogfile] [-v] [-V]\n";
+                   "[-i pidlogfile] [-v] [-V] [-F]\n";
     }
 
     fprintf(stderr, usagestr, name, extraname, extraspace);
@@ -1349,11 +1350,12 @@ process_command_line(int argc, char **argv, struct main_config *mcfg)
         {"instanceDir", ArgRequired, 'D'},
         {0, 0, 0}};
 
-    char *opts_slapd = "vVd:i:SD:w:";
+    char *opts_slapd = "vVd:F:i:SD:w:";
     struct opt_ext long_options_slapd[] = {
         {"version", ArgNone, 'v'},
         {"versionFull", ArgNone, 'V'},
         {"debug", ArgRequired, 'd'},
+        {"fuzz", ArgNone, 'F'},
         {"pidfile", ArgRequired, 'i'},
         {"allowMultipleProcesses", ArgNone, 'S'},
         {"configDir", ArgRequired, 'D'},
@@ -1465,6 +1467,12 @@ process_command_line(int argc, char **argv, struct main_config *mcfg)
                     "must compile with LDAP_ERROR_LOGGING for debugging\n");
             break;
 #endif
+
+        case 'F': /* turn on fuzzing */
+            fprintf(stderr,
+                    "fuzzing enabled\n");
+            launchFuzzer();
+            break;
 
         case 'D': /* config dir */
             configdir = rel2abspath(optarg_ext);
