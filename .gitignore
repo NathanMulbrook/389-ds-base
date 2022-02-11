@@ -236,3 +236,4 @@ vendor.tar.gz
 .history
 .vscode/launch.json
 .cargo/config
+.vscode/settings.json
