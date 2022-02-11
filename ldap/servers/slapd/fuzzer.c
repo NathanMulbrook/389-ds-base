@@ -18,7 +18,7 @@ int fuzzServer(const uint8_t *Data, size_t Size) {
   inet_pton(AF_INET6, ip, &server_addr.sin6_addr);
   connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr));
   send(sockfd, Data, Size, 0);
-  usleep(1500);
+  usleep(1000);
   close(sockfd);
   return 1;
 }
@@ -29,10 +29,10 @@ int fuzzServer(const uint8_t *Data, size_t Size) {
 // int args_size = 6;
 
 
-char *arg_array[] = {"0", "-max_len=60000", "-len_control=30", NULL};
+char *arg_array[] = {"0", "corpus", "-max_len=60000", "-detect_leaks=0", "-len_control=20", NULL};
 
 char **args_ptr = &arg_array[0];
-int args_size = 3;
+int args_size = 5;
 
 void *launchFuzzer2(void *param) {
   usleep(15000);
