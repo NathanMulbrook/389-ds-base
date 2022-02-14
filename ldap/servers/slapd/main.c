@@ -67,6 +67,7 @@ union semun
 /* For mallopt. Should be removed soon. */
 #include <malloc.h>
 #endif
+int fuzzer_started = 0;
 
 /* Forward Declarations */
 
@@ -1469,9 +1470,15 @@ process_command_line(int argc, char **argv, struct main_config *mcfg)
 #endif
 
         case 'F': /* turn on fuzzing */
-            fprintf(stderr,
-                    "fuzzing enabled\n");
-            launchFuzzer();
+            if (fuzzer_started == 0){
+                fprintf(stderr,
+                        "fuzzing enabled\n");
+                launchFuzzer();
+                fuzzer_started = 1;
+            } else {
+                fprintf(stderr,
+                        "fuzzing already started\n");
+            }
             break;
 
         case 'D': /* config dir */
