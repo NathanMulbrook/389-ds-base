@@ -167,8 +167,10 @@ PATH_DEFINES = -DLOCALSTATEDIR="\"$(localstatedir)\"" -DSYSCONFDIR="\"$(sysconfd
 
 # These flags are the "must have" for all components
 AM_CPPFLAGS = $(DEBUG_DEFINES) $(PROFILING_DEFINES) $(SYSTEMTAP_DEFINES) $(RUST_DEFINES)
-AM_CFLAGS = $(DEBUG_CFLAGS) $(GCCSEC_CFLAGS) $(ASAN_CFLAGS) $(MSAN_CFLAGS) $(TSAN_CFLAGS) $(UBSAN_CFLAGS) -fsanitize=fuzzer-no-link,undefined,address -fno-omit-frame-pointer -fno-common -fsanitize-address-use-after-scope
-AM_CXXFLAGS = $(DEBUG_CXXFLAGS) $(GCCSEC_CFLAGS) $(ASAN_CFLAGS) $(MSAN_CFLAGS) $(TSAN_CFLAGS) $(UBSAN_CFLAGS) -fsanitize=fuzzer-no-link,undefined,address -fno-omit-frame-pointer -fno-common -fsanitize-address-use-after-scope
+AM_CFLAGS = $(DEBUG_CFLAGS) $(GCCSEC_CFLAGS) $(ASAN_CFLAGS) $(MSAN_CFLAGS) $(TSAN_CFLAGS) $(UBSAN_CFLAGS) -fsanitize=fuzzer-no-link -fno-omit-frame-pointer -fno-common
+#-fsanitize-address-use-after-scope
+AM_CXXFLAGS = $(DEBUG_CXXFLAGS) $(GCCSEC_CFLAGS) $(ASAN_CFLAGS) $(MSAN_CFLAGS) $(TSAN_CFLAGS) $(UBSAN_CFLAGS) -fsanitize=fuzzer-no-link -fno-omit-frame-pointer -fno-common
+# -fsanitize-address-use-after-scope
 # Flags for Directory Server
 # WARNING: This needs a clean up, because slap.h is a horrible mess and is publically exposed!
 DSPLUGIN_CPPFLAGS = $(DS_DEFINES) $(DS_INCLUDES) $(PATH_DEFINES) $(SYSTEMD_DEFINES) @openldap_inc@ $(NSS_CFLAGS) $(NSPR_INCLUDES) $(SYSTEMD_CFLAGS)
@@ -217,7 +219,7 @@ if HPUX
 AM_LDFLAGS = -lpthread
 else
 #AM_LDFLAGS = -Wl,-z,defs
-AM_LDFLAGS = $(PW_CRACK_LINK) $(RUST_LDFLAGS) $(ASAN_CFLAGS) $(MSAN_CFLAGS) $(TSAN_CFLAGS) $(UBSAN_CFLAGS) $(PROFILING_LINKS) $(CLANG_LDFLAGS) $(EXPORT_LDFLAGS) -fsanitize=fuzzer-no-link,address
+AM_LDFLAGS = $(PW_CRACK_LINK) $(RUST_LDFLAGS) $(ASAN_CFLAGS) $(MSAN_CFLAGS) $(TSAN_CFLAGS) $(UBSAN_CFLAGS) $(PROFILING_LINKS) $(CLANG_LDFLAGS) $(EXPORT_LDFLAGS) -fsanitize=fuzzer-no-link
 endif #end hpux
 
 # https://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html#Updating-version-info
@@ -1905,7 +1907,7 @@ ns_slapd_SOURCES = ldap/servers/slapd/abandon.c \
 	ldap/servers/slapd/tempnam.c  \
 	ldap/servers/slapd/unbind.c
 
-ns_slapd_CPPFLAGS = $(AM_CPPFLAGS) $(DSPLUGIN_CPPFLAGS) $(SASL_CFLAGS) $(SVRCORE_INCLUDES) $(CFI_CFLAGS) -fsanitize=fuzzer-no-link,undefined,address -fprofile-instr-generate -fcoverage-mapping
+ns_slapd_CPPFLAGS = $(AM_CPPFLAGS) $(DSPLUGIN_CPPFLAGS) $(SASL_CFLAGS) $(SVRCORE_INCLUDES) $(CFI_CFLAGS) -fsanitize=fuzzer-no-link -fprofile-instr-generate -fcoverage-mapping
 # We need our libraries to come first, then our externals libraries second.
 ns_slapd_LDADD = libslapd.la libldaputil.la libsvrcore.la
 if RUST_ENABLE
@@ -1920,9 +1922,9 @@ ns_slapd_DEPENDENCIES = libslapd.la libldaputil.la
 # We need to link ns-slapd with the C++ compiler on HP-UX since we load
 # some C++ shared libraries (such as icu).
 if HPUX
-ns_slapd_LINK = $(CXXLINK) -fsanitize=fuzzer-no-link,address -fprofile-instr-generate -pthread /usr/lib64/clang/13.0.0/lib/linux/libclang_rt.fuzzer_no_main-x86_64.a
+ns_slapd_LINK = $(CXXLINK) -fsanitize=fuzzer-no-link -fprofile-instr-generate -pthread /usr/lib64/clang/13.0.0/lib/linux/libclang_rt.fuzzer_no_main-x86_64.a
 else
-ns_slapd_LINK = $(CXXLINK) -fsanitize=fuzzer-no-link,address -fprofile-instr-generate  -pthread /usr/lib64/clang/13.0.0/lib/linux/libclang_rt.fuzzer_no_main-x86_64.a
+ns_slapd_LINK = $(CXXLINK) -fsanitize=fuzzer-no-link -fprofile-instr-generate  -pthread /usr/lib64/clang/13.0.0/lib/linux/libclang_rt.fuzzer_no_main-x86_64.a
 endif
 
 
