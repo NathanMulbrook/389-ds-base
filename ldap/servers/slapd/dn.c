@@ -507,16 +507,27 @@ substr_dn_normalize(char *dn __attribute__((unused)), char *end)
     return end;
 }
 
+__attribute__((no_sanitize("address")))
 static int
 ISEOV(char *s, char *ends)
 {
+    fprintf(stderr, "&s   %p\n", &s);
+        fprintf(stderr, "s   %p\n", s);
+    fprintf(stderr, "&ends   %p\n", &ends);
+        fprintf(stderr, "ends   %p\n", ends);
     char *p;
     for (p = s; p && *p && p < ends; p++) {
         if (SEPARATOR(*p)) {
+                        fprintf(stderr, "is separator %c\n", *p);
+
             return 1;
         } else if (!ISBLANK(*p)) {
+                                    fprintf(stderr, "is not blank %c\n", *p);
+
             return 0; /* not the end of the value */
         }
+            fprintf(stderr, "&p   %p\n", &p);
+        fprintf(stderr, "p   %p\n", p);
     }
     return 1;
 }
@@ -588,6 +599,8 @@ slapi_dn_normalize_ext(char *src, size_t src_len, char **dest, size_t *dest_len)
         *dest_len = strlen(*dest);
         return rc;
     }
+        fprintf(stderr, "src_len   %zu\n", src_len);
+
 
     s = PL_strnchr(src, '\\', src_len);
     if (s) {
@@ -1593,6 +1606,7 @@ slapi_dn_beparent(
  *   etc.
  * }
  */
+__attribute__((no_sanitize("address")))
 const char *
 slapi_dn_find_parent_ext(const char *dn, int is_tombstone)
 {

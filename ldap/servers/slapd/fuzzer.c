@@ -96,9 +96,9 @@ fuzzServer(const uint8_t *Data, size_t Size)
         }
         if (Size >= 2) {
             send(sockfd, &Data[1], Size - 1, 0);
-        }
+       }
 
-        usleep(6000);
+        usleep(16000);
         close(sockfd);
         usleep(1850);
     }
