@@ -1690,6 +1690,7 @@ slapi_dn_parent_ext(const char *dn, int is_tombstone)
     return (slapi_ch_strdup(s));
 }
 
+__attribute__((no_sanitize("address")))
 char *
 slapi_dn_parent(const char *dn)
 {
