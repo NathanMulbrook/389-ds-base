@@ -185,7 +185,6 @@ slapi_ch_calloc(
     return (newmem);
 }
 
-__attribute__((no_sanitize("address")))
 char *
 slapi_ch_strdup(const char *s1)
 {
