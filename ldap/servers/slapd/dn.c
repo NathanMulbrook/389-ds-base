@@ -556,7 +556,7 @@ slapi_dn_normalize_ext(char *src, size_t src_len, char **dest, size_t *dest_len)
         *dest_len = strlen(*dest);
         return rc;
     }
-        fprintf(stderr, "src_len   %zu\n", src_len);
+        //fprintf(stderr, "src_len   %zu\n", src_len);
 
 
     s = PL_strnchr(src, '\\', src_len);
@@ -1563,7 +1563,7 @@ slapi_dn_beparent(
  *   etc.
  * }
  */
-__attribute__((no_sanitize("address")))
+
 const char *
 slapi_dn_find_parent_ext(const char *dn, int is_tombstone)
 {
