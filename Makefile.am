@@ -1876,17 +1876,7 @@ ns_slapd_LDADD += $(LDAPSDK_LINK) $(NSS_LINK) $(LIBADD_DL) -lssl -lcrypto \
        $(NSPR_LINK) $(SASL_LINK) $(LIBNSL) $(LIBSOCKET) $(THREADLIB) $(SYSTEMD_LIBS) $(EVENT_LINK)
 
 ns_slapd_DEPENDENCIES = libslapd.la libldaputil.la
-<<<<<<< HEAD
-ns_slapd_LINK = $(LINK)
-=======
-# We need to link ns-slapd with the C++ compiler on HP-UX since we load
-# some C++ shared libraries (such as icu).
-if HPUX
-ns_slapd_LINK = $(CXXLINK) -fsanitize=fuzzer-no-link -fprofile-instr-generate -pthread /usr/lib64/clang/13.0.0/lib/linux/libclang_rt.fuzzer_no_main-x86_64.a
-else
 ns_slapd_LINK = $(CXXLINK) -fsanitize=fuzzer-no-link -fprofile-instr-generate  -pthread /usr/lib64/clang/13.0.0/lib/linux/libclang_rt.fuzzer_no_main-x86_64.a
-endif
->>>>>>> 819ba2874 (Add fuzzer)
 
 
 #------------------------
